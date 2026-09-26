@@ -3,12 +3,28 @@ const db = require("./db");
 const app = express();
 app.use(express.json());
 
+const EVENT_FIELDS = ["title", "date", "startTime", "endTime"];
+
 app.get("/events", async (req, res) => {
   res.json(await db.all("events"));
 });
 
 app.post("/events", async (req, res) => {
-  const event = await db.insert("events", req.body);
+  const body = req.body || {};
+  for (const field of EVENT_FIELDS) {
+    if (!body[field] || typeof body[field] !== "string") {
+      return res.status(400).json({ error: `Missing or invalid field: ${field}` });
+    }
+  }
+
+  const eventData = {
+    title: body.title,
+    date: body.date,
+    startTime: body.startTime,
+    endTime: body.endTime
+  };
+
+  const event = await db.insert("events", eventData);
   res.status(201).json(event);
 });
 
