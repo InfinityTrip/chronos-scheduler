@@ -3,7 +3,7 @@ const db = require("./db");
 const app = express();
 app.use(express.json());
 
-const EVENT_FIELDS = ["title", "date", "startTime", "endTime"];
+const EVENT_FIELDS = ["title", "date", "start", "end"];
 
 app.get("/events", async (req, res) => {
   res.json(await db.all("events"));
@@ -20,8 +20,8 @@ app.post("/events", async (req, res) => {
   const eventData = {
     title: body.title,
     date: body.date,
-    startTime: body.startTime,
-    endTime: body.endTime
+    startTime: body.start,
+    endTime: body.end
   };
 
   const event = await db.insert("events", eventData);
